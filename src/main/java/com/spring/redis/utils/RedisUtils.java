@@ -1,6 +1,6 @@
 package com.spring.redis.utils;
 
-import com.google.gson.Gson;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -53,12 +53,10 @@ public class RedisUtils {
     }
 
     private <T> T stringToBean(String str, Class<T> clazz) {
-        Gson gson = new Gson();
-        return gson.fromJson(str, clazz);
+        return JSONObject.parseObject(str,clazz);
     }
 
     private <T> String beanToString(T value) {
-        Gson gson = new Gson();
-        return gson.toJson(value);
+        return JSONObject.toJSONString(value);
     }
 }
