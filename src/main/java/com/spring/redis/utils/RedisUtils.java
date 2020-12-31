@@ -1,9 +1,10 @@
 package com.spring.redis.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+
+import java.util.Map;
 
 /**
  * @program: common-spring-boot-starter
@@ -28,7 +29,7 @@ public class RedisUtils {
         try (Jedis resource = jedisPool.getResource()) {
             String str = resource.get(key);
 
-            return stringToBean(str, clazz);
+            return jsonToObject(str, clazz);
         }
     }
 
@@ -37,7 +38,7 @@ public class RedisUtils {
      */
     public <T> boolean set(String key, T value, int expireSeconds) {
         try (Jedis resource = jedisPool.getResource()) {
-            String valueStr = beanToString(value);
+            String valueStr = objectToJson(value);
             if (valueStr == null || valueStr.length() == 0) {
                 return false;
             }
@@ -52,11 +53,28 @@ public class RedisUtils {
         }
     }
 
-    private <T> T stringToBean(String str, Class<T> clazz) {
-        return JSONObject.parseObject(str,clazz);
+    private <T> T jsonToObject(String json, Class<T> clazz) {
+        return JsonAndXmlUtils.jsonToObject(json, clazz);
     }
 
-    private <T> String beanToString(T value) {
-        return JSONObject.toJSONString(value);
+    private String objectToJson(Object object) {
+        return JsonAndXmlUtils.objectToJson(object);
     }
+
+    private Map jsonToMap(String json) {
+        return JsonAndXmlUtils.jsonToMap(json);
+    }
+
+    private String objectToXml(Object data) {
+        return JsonAndXmlUtils.objectToXml(data);
+    }
+
+    private <T> T xmlToObject(String xml, Class<T> clazz) {
+        return JsonAndXmlUtils.xmlToObject(xml, clazz);
+    }
+
+    private String mapToXml(Map<String, Object> map) {
+        return JsonAndXmlUtils.mapToXml(map);
+    }
+
 }
